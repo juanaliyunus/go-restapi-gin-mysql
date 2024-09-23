@@ -3,6 +3,7 @@ package config
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"go-restapi/models"
 )
 
 var DB *gorm.DB
@@ -12,7 +13,7 @@ func ConnectDatabase()  {
 	if err != nil {
 		panic(err)
 	}
-	database.AutoMigrate(&Product{})
+	database.AutoMigrate(&models.Product{})
 
 	DB = database
 }
