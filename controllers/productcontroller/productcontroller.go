@@ -1,6 +1,7 @@
 package productcontroller
 
 import (
+	"encoding/json"
 	"go-restapi/config"
 	"go-restapi/models"
 	"net/http"
@@ -60,5 +61,21 @@ func Update(c *gin.Context) {
 
 }
 func Delete(c *gin.Context) {
-	
+	var product models.Product
+
+	var input struct {
+		Id json.Number
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	id, _ := input.Id.Int64()
+	if config.DB.Delete(&product, id).RowsAffected == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"message": "Failed to delete product"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Product deleted successfully"})
 }
